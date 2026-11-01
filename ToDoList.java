@@ -1,5 +1,3 @@
-// add input validation later...
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,9 +5,27 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ToDoList {
-    private static Scanner scanner = new Scanner(System.in);
+    private static Scanner sc = new Scanner(System.in);
     private static ArrayList<String> tasks = new ArrayList<String>();
     private static File file;
+
+    private static int readInt(int min, int max) {
+        while (true) {
+            if (sc.hasNextInt()) {
+                int value = sc.nextInt();
+                sc.nextLine();
+
+                if (value >= min && value <= max) {
+                    return value;
+                } else {
+                    System.out.println("Input must be between " + min + "-" + max + ". Please try again.");
+                }
+            } else {
+                System.out.println("Invalid input. Please try again.");
+                sc.nextLine();
+            }
+        }
+    }
 
     private static void createFile(String fileName) {
         file = new File(fileName + ".txt");
@@ -25,7 +41,7 @@ public class ToDoList {
                 }
                 fileWriter.close();
 
-                System.out.println("File already exists: " + file.getAbsolutePath()+ "No file created.");
+                System.out.println("No file created: " + file.getAbsolutePath());
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -33,8 +49,12 @@ public class ToDoList {
     }
 
     private static void printTasks() {
-        for (int i = 0; i < tasks.size(); i++) {
+        if (tasks.size() > 0) {
+            for (int i = 0; i < tasks.size(); i++) {
             System.out.println((i+1) + ". " + tasks.get(i));
+            }
+        } else {
+            System.out.println("No tasks to view.");
         }
     }
 
@@ -52,15 +72,14 @@ public class ToDoList {
         printTasks();
 
         System.out.println("Enter task you want to modify");
-        int taskNumber = scanner.nextInt() - 1;
-        scanner.nextLine();
+        int taskNumber = readInt(1, tasks.size());
 
-        return taskNumber;
+        return taskNumber - 1;
     }
 
     private static void addTask() {
         System.out.println("Enter task you want to add");
-        tasks.add(scanner.nextLine());
+        tasks.add(sc.nextLine());
 
         writeTasksToFile();
         System.out.println("Task added.\n");
@@ -71,7 +90,7 @@ public class ToDoList {
 
         System.out.println("Enter new task");
 
-        tasks.set(taskNumber, scanner.nextLine());
+        tasks.set(taskNumber, sc.nextLine());
 
         writeTasksToFile();
 
@@ -90,7 +109,7 @@ public class ToDoList {
 
     public static void main(String[] args) {
         System.out.println("Input file name without extensions");
-        createFile(scanner.nextLine());
+        createFile(sc.nextLine());
 
         while (true) {
             System.out.println("1. View tasks");
@@ -99,14 +118,14 @@ public class ToDoList {
             System.out.println("4. Remove task");
             System.out.println("5. Exit");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // clear leftover newline
+            System.out.println("Input choice:");
+            int choice = readInt(1, 5);
 
             switch (choice) {
                 case 1:
                     printTasks();
-                    System.out.println("Press any key to continue..."); // give user time to read
-                    scanner.nextLine();
+                    System.out.println("Press any key to continue...");
+                    sc.nextLine();
                     break;
                 case 2:
                     addTask();
@@ -118,8 +137,10 @@ public class ToDoList {
                     removeTask();
                     break;
                 case 5:
-                    scanner.close();
+                    sc.close();
                     System.exit(0);
+                default:
+                    System.out.println("Number not within range. Please try again");
             }
         }
     }

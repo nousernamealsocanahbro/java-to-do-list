@@ -4,12 +4,8 @@ Compile in terminal with:
 > java ToDoList.java
 
 # How it works
-The program will ask you to write the name of a file when you run it. 
-
-If it does not exist, it will create the file. If it does, it will copy the text inside into an array. 
-
-This file will act as a permanent storage for the array so that you may modify or remove tasks.
-
-# Current bugs
-- Lack of input validation leads to crashes
-- Does not check for negative integers
+Program asks you for a file name at the start to keep tasks as permanent memory. If the file already exists, it will load the contents of that file into memory. From there you can choose between
+1. Viewing current tasks
+2. Adding a task
+3. Modifying a task
+4. Removing a task
